@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Prima Vue</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+
+</head>
+<body>
+<div id="app">
+    <h1>{{title}}</h1>
+    <h2>{{totaleElementi}} prodotti da comprare</h2>
+    <ul v-for="prod in products">
+        <li>{{prod.id}} - {{prod.name}} ({{prod.qta}})<span v-if="prod.priority===true">IMPORTANTE</span>
+        <button @click="prod.qta+=1">Compra</button>
+        <button v-on:click="prod.qta*=2">Raddoppia</button>
+        
+    </li>
+    </ul>
+    <div>{{elementiNelCarrello}} prodotti nel carrello</div>
+    <hr>
+    <div>Click counter: {{click}}</div>
+    <button v-on:click="addClick">incrementa</button>
+
+    <hr>
+    <div>Evento di hover: {{parolaDaInvertire}}</div>
+    <button @mouseover="inverti" @click="nullo">inverti</button>
+
+    <hr>
+    <h2>Prova Component</h2>
+    <monitor messaggio="Prova Messaggio" stato="200"></monitor>
+    <monitor :messaggio="parolaDaInvertire" stato="200" titolo="Monitor in bind con parolaDaInvertire"></monitor>
+    <monitor :prodotto="products[0]" stato="200" titolo="Monitor debug oggetto" :messaggio="JSON.stringify(products[0])"></monitor>
+    
+</div>
+
+
+<script src="js/main.js"></script>
+</body>
+</html>
