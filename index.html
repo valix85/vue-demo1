@@ -31,8 +31,8 @@
     <hr>
     <h2>Prova Component</h2>
     <monitor messaggio="Prova Messaggio" stato="200"></monitor>
-    <monitor :messaggio="parolaDaInvertire" stato="200" titolo="Monitor in bind con parolaDaInvertire"></monitor>
-    <monitor :prodotto="products[0]" stato="200" titolo="Monitor debug oggetto" :messaggio="JSON.stringify(products[0])"></monitor>
+    <monitor :messaggio="parolaDaInvertire" stato="200" titolo="Monitor in bind con parolaDaInvertire" @add-to-read="hideMe"></monitor>
+    <monitor :prodotto="products[0]" stato="200" titolo="Monitor debug oggetto" :messaggio="JSON.stringify(products[0])" @add-to-read="hideMe"></monitor>
     
 </div>
 

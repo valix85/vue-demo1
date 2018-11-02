@@ -22,7 +22,7 @@ Vue.component('monitor', {
         prodotto: {
             type: Object,
             required: false,
-            default: {}
+            default:function () { return {} }
         }
     },
 
@@ -32,6 +32,7 @@ Vue.component('monitor', {
         <div class="monitor-stato">{{stato}}</div>
         <div class="monitor-messaggio">{{messaggio}}</div>
         <div v-if="Object.keys(prodotto).length>1" >Prezzo: {{calcolaPrezzo}}</div>
+        <button @click="addToRead">Letto</button>
     </div>`,
     
     //component can have proper data, it's use a data function that return a data object. Each component return a unique data
@@ -49,7 +50,20 @@ Vue.component('monitor', {
         }
         return this.prodotto.prezzo;
     }
+    },
+
+    //per permette la fuoriuscita delle informazioni e gestire l'interazione del componente si possono utilizzare gli eventi.
+    //il componente dall'interno emette un evento e viene catturato dall'esterno nel dom dove vi è @nome evento sul componente. Ovvero cosa farà vue quando il componente lancia quell'evento?ci sarà un'altra funzione di più ampia visibilità che se ne occuperà
+
+    methods:{
+        addToRead(){
+            console.log("letto");
+            console.log("prodotto:",this.prodotto);
+            //this.$emit("add-to-read");//emittitore senza parametri
+            this.$emit("add-to-read", this.prodotto);
+        }
     }
+    
 })
 
 
@@ -108,7 +122,13 @@ const app = new Vue({
             this.click+=1;
         },
         inverti (){this.parolaDaInvertire = this.parolaDaInvertire.split('').reverse().join('');},
-        nullo (){}
+        nullo (){},
+        hideMe(prod){
+            console.log("Evento ricevuto dal componente");
+            console.log(prod); //oggetto passato dall'evento
+            alert("Letto il prodotto " + prod.name)
+            
+        }
     }
 });
 
