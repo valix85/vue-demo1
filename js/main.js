@@ -50,8 +50,21 @@ Vue.component('monitor', {
         return this.prodotto.prezzo;
     }
     }
-    
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const app = new Vue({
     el: "#app",
