@@ -30,9 +30,11 @@
 
     <hr>
     <h2>Prova Component</h2>
-    <monitor messaggio="Prova Messaggio" stato="200"></monitor>
-    <monitor :messaggio="parolaDaInvertire" stato="200" titolo="Monitor in bind con parolaDaInvertire" @add-to-read="hideMe"></monitor>
-    <monitor :prodotto="products[0]" stato="200" titolo="Monitor debug oggetto" :messaggio="JSON.stringify(products[0])" @add-to-read="hideMe"></monitor>
+    <monitor messaggio="Prova Messaggio" stato="200" id="101"></monitor>
+    <monitor :messaggio="parolaDaInvertire" stato="200" titolo="Monitor in bind con parolaDaInvertire" @add-to-read="hideMe" id="102"></monitor>
+    <monitor :prodotto="products[0]" stato="200" titolo="Monitor debug oggetto" :messaggio="JSON.stringify(products[0])" @add-to-read="hideMe" id="103"></monitor>
+
+    
     
 </div>
 
@@ -55,6 +57,9 @@ input[type="submit"] {
 button{
     background: rgb(37, 230, 133); border: 1px solid rgb(4, 126, 61); box-sizing: border-box; padding: 6px 6px; color:#333; cursor: pointer;
 }
+
+.activeTab {color:red;}
+.tab {padding:0px 6px;}
 
 </style>
 

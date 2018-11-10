@@ -1,4 +1,8 @@
 
+// Usato per scambiare oggetti tra componenti che di norma non comunicano
+//si lancia sul bus un evento e chi è in ascolto riceve l'oggetto dall'evento
+var eventBus = new Vue();
+
 Vue.component('monitor', {
     // props are used for passing data into our components, sono variabili che espone per contenere i dati dall'esterno. Si possono usare queste variabili nel template
     //props: [stato,messaggio],
@@ -23,7 +27,12 @@ Vue.component('monitor', {
             type: Object,
             required: false,
             default:function () { return {} }
-        }
+        },
+        id: {
+            type: String,
+            required: true,
+            default: 1001
+        },        
     },
 
     //component element must contain exactly ONE root element
@@ -33,14 +42,16 @@ Vue.component('monitor', {
         <div class="monitor-stato">{{stato}}</div>
         <div class="monitor-messaggio">{{messaggio}}</div>
         <div v-if="Object.keys(prodotto).length>1" >Prezzo: {{calcolaPrezzo}}</div>
-        <button @click="addToRead">Letto</button><br>        
-        <annotazione @annotazione-submitted="doSave"></annotazione>
+        <button @click="addToRead">Letto</button><br><br>---------------------------<br>        
+        <monitor-tabs :commenti="comments"></monitor-tabs>
     </div>`,
     
     //component can have proper data, it's use a data function that return a data object. Each component return a unique data
     data(){
         return {
-        
+            //stessa struttura dell'annotazioneReview
+            comments:[{commento:"prova mex", nome:"Titolo demo",valutazione:3}]
+            
         }
     },   
 
@@ -63,10 +74,33 @@ Vue.component('monitor', {
             console.log("prodotto:",this.prodotto);
             //this.$emit("add-to-read");//emittitore senza parametri
             this.$emit("add-to-read", this.prodotto);
-        },
+        } /*,
+        // rimuovo da qui per passarlo a un'altra funzione in grado di agganciare altre istanze di Vue
         doSave(annotazioneReview1){
             console.log("Ricevuti i dati della form di annotazione-submitted\n", annotazioneReview1)
+            this.comments.push(annotazioneReview1)
         }
+        */
+    },
+    //necessario mounted() per agganciarsi all'eventBus (altra istanza di Vue associata al DOM) is a LyfeCycle Hooks.
+    //tutti i componenti scatteranno, occhio ad avere più istanze delo stesso componente, agirà x ogni istanza
+    mounted(){
+
+        /*        
+        eventBus.$on('annotazione-submitted', function(annotazioneReview){
+            console.log("Ricevuti i dati della form di annotazione-submitted tramite eventBus\n", annotazioneReview, this)            
+            this.comments.push(annotazioneReview)
+            }.bind(this) //se non uso arrowFunction di ES6 devo bindare a mano il this col metodo bind()
+        )
+        */ 
+
+
+        
+        eventBus.$on('annotazione-submitted', annotazioneReview=>{
+            console.log("Ricevuti i dati della form di annotazione-submitted tramite eventBus\n", annotazioneReview, this)
+            this.comments.push(annotazioneReview)
+            }
+        )
     }
     
 })
@@ -77,7 +111,7 @@ Vue.component('monitor', {
 //usare lo specificatore prevent sull'evento di submit della form per evitare il cambio pagina di default del browser
 //https://www.vuemastery.com/courses/intro-to-vue-js/forms/
 //provare a ciclare con v-for l'array degli errori
-Vue.component('annotazione', {
+Vue.component('annotazione', {    
     template: `
     <div>
     <form @submit.prevent="onMySubmit">
@@ -122,7 +156,9 @@ Vue.component('annotazione', {
                 }
                 //console.log(annotazioneReview);
                 //faccio uscire i dati con un evento
-                this.$emit("annotazione-submitted", annotazioneReview)
+                //this.$emit("annotazione-submitted", annotazioneReview)
+                //Con la tab ho necessità diverse di comunicazione, uso l'eventBus
+                eventBus.$emit("annotazione-submitted", annotazioneReview)
                 this.nome="";
                 this.commenttxt="";
                 this.rating="";
@@ -135,6 +171,45 @@ Vue.component('annotazione', {
 })
 
 
+Vue.component('monitor-tabs', {
+    props: {
+        commenti: {
+            type: Array,
+            required: true
+        }
+    },
+    template: `
+    <div>
+    <span class="tab" v-for="(tab,idx) in tabs" :key="idx" @click="selectedTab = tab" :class="{activeTab: selectedTab === tab}">{{tab}}</span>  
+    
+
+    <!-- scelgo le tab da mostrare -->
+    <div v-show="selectedTab === 'Commenti'">
+    <div v-if="!commenti.length">
+    Nessun commento
+    </div>
+    <div v-else>
+    <div v-for="(commento,idx) in commenti" :key="idx">
+    <h4>{{idx}}</h4>
+    Titolo: {{commento.nome}}<br>
+    Commento: {{commento.commento}}<br>
+    Punteggio: {{commento.valutazione}}
+    </div>
+    </div>
+    </div>
+
+    <div v-show="selectedTab === tabs[1]">    
+    <annotazione ></annotazione>
+    </div>
+    
+    </div>`,
+    data(){
+        return{
+            tabs: ['Commenti','Annota'],
+            selectedTab: 'Commenti'
+        }
+    }
+})
 
 
 
